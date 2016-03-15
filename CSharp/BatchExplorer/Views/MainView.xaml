@@ -94,6 +94,13 @@
 
         <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TreeViewItem}">
             <Setter Property="IsExpanded" Value="True"/>
+            <Setter Property="ContextMenu">
+                <Setter.Value>
+                    <ContextMenu>
+                        <MenuItem Command="ApplicationCommands.Copy" />
+                    </ContextMenu>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style x:Key="ConnectAccountMenuItemStyle" TargetType="MenuItem">
