@@ -36,6 +36,15 @@ For more information on using the [Batch Management .NET][net_mgmt_api] library,
 
 [Manage Azure Batch accounts and quotas with Batch Management .NET][acom_acct_article]
 
+#### ApplicationPackageUsage project
+
+The package usage sample application shows how to create a pool with an application package
+configured to be downloaded to every compute node, and how a task can use programs from that
+application package.  It demonstrates the following operations:
+
+1. Create a pool with an application package reference
+2. Create a task with a command line that uses a program from the application package
+
 [aad_adal]: https://azure.microsoft.com/documentation/articles/active-directory-authentication-libraries/
 [aad_integrate]: https://azure.microsoft.com/documentation/articles/active-directory-integrating-applications/
 [acom_acct_article]: https://azure.microsoft.com/documentation/articles/batch-management-dotnet/
