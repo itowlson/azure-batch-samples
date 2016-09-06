@@ -85,7 +85,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BatchClientExtensions.cs" />
+    <Compile Include="BatchServiceError.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceResponseSimulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
