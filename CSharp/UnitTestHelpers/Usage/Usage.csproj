@@ -102,7 +102,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Testee\JobCoordinator.cs" />
+    <Compile Include="Testee\PagedEnumerable.cs" />
     <Compile Include="Testee\PoolCoordinator.cs" />
+    <Compile Include="Tests\JobCoordinatorTests.cs" />
     <Compile Include="Tests\PoolCoordinatorTests.cs" />
   </ItemGroup>
   <ItemGroup>
