@@ -25,11 +25,11 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
 
                     var jobOperations = batchClient.JobOperations;
 
-                    jobOperations.OnRequest<TaskListBatchRequest>(r => r.ServiceRequestFunc = _ =>
+                    jobOperations.OnRequest<TaskListBatchRequest>(r => r.Return(() =>
                     {
                         filter = r.Options.Filter;
-                        return Task.FromResult(new AzureOperationResponse<IPage<Models.CloudTask>, Models.TaskListHeaders> { Body = DataPage.Empty<Models.CloudTask>() });
-                    });
+                        return new AzureOperationResponse<IPage<Models.CloudTask>, Models.TaskListHeaders> { Body = DataPage.Empty<Models.CloudTask>() };
+                    }));
 
                     var jobCoordinator = new JobCoordinator(jobOperations);
 
@@ -52,7 +52,7 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
                         new Models.CloudTask(),
                     };
 
-                    jobOperations.OnRequest<TaskListBatchRequest>(r => r.ServiceRequestFunc = _ => Task.FromResult(new AzureOperationResponse<IPage<Models.CloudTask>, Models.TaskListHeaders> { Body = DataPage.Single(fakeTasks) }));
+                    jobOperations.OnRequest<TaskListBatchRequest>(r => r.Return(() => new AzureOperationResponse<IPage<Models.CloudTask>, Models.TaskListHeaders> { Body = DataPage.Single(fakeTasks) }));
 
                     var jobCoordinator = new JobCoordinator(jobOperations);
 

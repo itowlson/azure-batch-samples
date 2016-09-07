@@ -20,7 +20,7 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
         public class EnsureCapacityMethod
         {
             [Fact]
-            public async Task IfPoolDoesNotExistThenItIsCreated()
+            public async Task IfPoolDoesNotExistThenItIsCreated_TestedUsingRawServiceRequestFunc()
             {
                 var createdPools = new List<string>();
 
@@ -29,6 +29,28 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
                     // Arrange
                     batchClient.OnRequest<PoolGetBatchRequest>(r => r.ServiceRequestFunc = x => { throw BatchServiceError.Simulate(HttpStatusCode.NotFound, BatchErrorCodeStrings.PoolNotFound); });
                     batchClient.OnRequest<PoolAddBatchRequest>(r => r.ServiceRequestFunc = x => { createdPools.Add(r.Parameters.Id); return Task.FromResult(new AzureOperationHeaderResponse<Protocol.Models.PoolAddHeaders>()); });
+
+                    var poolCoordinator = new PoolCoordinator(batchClient);
+
+                    // Act
+                    await poolCoordinator.EnsureCapacity("new-pool", "A2", 40);
+
+                    // Assert
+                    Assert.Equal(1, createdPools.Count);
+                    Assert.Equal("new-pool", createdPools.Single());
+                }
+            }
+
+            [Fact]
+            public async Task IfPoolDoesNotExistThenItIsCreated_TestedUsingConvenienceMethods()
+            {
+                var createdPools = new List<string>();
+
+                using (BatchClient batchClient = BatchResourceFactory.CreateBatchClient())
+                {
+                    // Arrange
+                    batchClient.OnRequest<PoolGetBatchRequest>(r => r.Throw(BatchServiceError.Simulate(HttpStatusCode.NotFound, BatchErrorCodeStrings.PoolNotFound)));
+                    batchClient.OnRequest<PoolAddBatchRequest>(r => r.Return(() => { createdPools.Add(r.Parameters.Id); return new AzureOperationHeaderResponse<Protocol.Models.PoolAddHeaders>(); }));
 
                     var poolCoordinator = new PoolCoordinator(batchClient);
 

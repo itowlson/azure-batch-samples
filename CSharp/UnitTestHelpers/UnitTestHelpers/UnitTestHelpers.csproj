@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BatchClientExtensions.cs" />
+    <Compile Include="BatchRequestExtensions.cs" />
     <Compile Include="BatchResourceFactory.cs" />
     <Compile Include="BatchServiceError.cs" />
     <Compile Include="DataPage.cs" />
