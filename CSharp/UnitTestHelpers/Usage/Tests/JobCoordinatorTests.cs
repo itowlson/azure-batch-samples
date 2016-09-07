@@ -19,7 +19,7 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
             [Fact]
             public async Task RequestsOnlyCompletedTasks()
             {
-                using (BatchClient batchClient = BatchClient.Open(new Auth.BatchSharedKeyCredentials("https://fake.batch.test", "dummy", "dummy")))
+                using (BatchClient batchClient = BatchResourceFactory.CreateBatchClient())
                 {
                     string filter = null;
 
@@ -42,7 +42,7 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
             [Fact]
             public async Task CountsReturnedTasks()
             {
-                using (BatchClient batchClient = BatchClient.Open(new Auth.BatchSharedKeyCredentials("https://fake.batch.test", "dummy", "dummy")))
+                using (BatchClient batchClient = BatchResourceFactory.CreateBatchClient())
                 {
                     var jobOperations = batchClient.JobOperations;
 

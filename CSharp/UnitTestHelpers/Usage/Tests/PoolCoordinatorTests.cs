@@ -24,7 +24,7 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
             {
                 var createdPools = new List<string>();
 
-                using (BatchClient batchClient = BatchClient.Open(new Auth.BatchSharedKeyCredentials("https://fake.batch.test", "dummy", "dummy")))
+                using (BatchClient batchClient = BatchResourceFactory.CreateBatchClient())
                 {
                     // Arrange
                     batchClient.OnRequest<PoolGetBatchRequest>(r => r.ServiceRequestFunc = x => { throw BatchServiceError.Simulate(HttpStatusCode.NotFound, BatchErrorCodeStrings.PoolNotFound); });
