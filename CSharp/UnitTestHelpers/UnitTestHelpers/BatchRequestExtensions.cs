@@ -22,6 +22,12 @@ namespace Microsoft.Azure.Batch.Test
             r.ServiceRequestFunc = _ => Task.FromResult(new AzureOperationResponse<TResponse, THeader> { Body = response() });
         }
 
+        public static void Return<TOptions, TResponse, THeader>(this Protocol.BatchRequest<TOptions, AzureOperationResponse<IPage<TResponse>, THeader>> r, Func<IEnumerable<TResponse>> response)
+            where TOptions : Protocol.Models.IOptions, new()
+        {
+            r.ServiceRequestFunc = _ => Task.FromResult(new AzureOperationResponse<IPage<TResponse>, THeader> { Body = DataPage.Single(response()) });
+        }
+
         public static void Throw<TOptions, TResponse>(this Protocol.BatchRequest<TOptions, TResponse> r, Exception exception)
             where TOptions : Protocol.Models.IOptions, new()
             where TResponse : IAzureOperationResponse

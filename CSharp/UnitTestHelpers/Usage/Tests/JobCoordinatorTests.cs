@@ -79,6 +79,29 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
                     Assert.Equal(2, completedCount);
                 }
             }
+
+            [Fact]
+            public async Task CountsReturnedTasks_TestedUsingConvenienceMethod()
+            {
+                using (BatchClient batchClient = BatchResourceFactory.CreateBatchClient())
+                {
+                    var jobOperations = batchClient.JobOperations;
+
+                    var fakeTasks = new List<Models.CloudTask>
+                    {
+                        new Models.CloudTask(),
+                        new Models.CloudTask(),
+                    };
+
+                    jobOperations.OnRequest<TaskListBatchRequest>(r => r.Return(() => fakeTasks));
+
+                    var jobCoordinator = new JobCoordinator(jobOperations);
+
+                    var completedCount = await jobCoordinator.GetCompletedTaskCountAsync("someid");
+
+                    Assert.Equal(2, completedCount);
+                }
+            }
         }
     }
 }
