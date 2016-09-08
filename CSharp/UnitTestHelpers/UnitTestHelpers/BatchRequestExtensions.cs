@@ -84,28 +84,28 @@ namespace Microsoft.Azure.Batch.Test
             where TOptions : Protocol.Models.IOptions, new()
             where TResponse : IAzureOperationResponse
         {
-            r.ServiceRequestFunc = _ => { throw new UnexpectedRequestException(r.GetType()); };
+            r.Throw(new UnexpectedRequestException(r.GetType()));
         }
 
         public static void Unexpected<TOptions, TResponse>(this Protocol.BatchRequest<TOptions, TResponse> r, string message)
             where TOptions : Protocol.Models.IOptions, new()
             where TResponse : IAzureOperationResponse
         {
-            r.ServiceRequestFunc = _ => { throw new UnexpectedRequestException(r.GetType(), message); };
+            r.Throw(new UnexpectedRequestException(r.GetType(), message));
         }
 
         public static void Unexpected<TBody, TOptions, TResponse>(this Protocol.BatchRequest<TBody, TOptions, TResponse> r)
             where TOptions : Protocol.Models.IOptions, new()
             where TResponse : IAzureOperationResponse
         {
-            r.ServiceRequestFunc = _ => { throw new UnexpectedRequestException(r.GetType()); };
+            r.Throw(new UnexpectedRequestException(r.GetType()));
         }
 
         public static void Unexpected<TBody, TOptions, TResponse>(this Protocol.BatchRequest<TBody, TOptions, TResponse> r, string message)
             where TOptions : Protocol.Models.IOptions, new()
             where TResponse : IAzureOperationResponse
         {
-            r.ServiceRequestFunc = _ => { throw new UnexpectedRequestException(r.GetType(), message); };
+            r.Throw(new UnexpectedRequestException(r.GetType(), message));
         }
 
         // Throw
