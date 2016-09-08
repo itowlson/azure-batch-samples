@@ -49,7 +49,7 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
                 using (BatchClient batchClient = BatchResourceFactory.CreateBatchClient())
                 {
                     // Arrange
-                    batchClient.OnRequest<PoolGetBatchRequest>(r => r.Throw(BatchServiceError.Simulate(HttpStatusCode.NotFound, BatchErrorCodeStrings.PoolNotFound)));
+                    batchClient.OnRequest<PoolGetBatchRequest>(r => r.Error(HttpStatusCode.NotFound, BatchErrorCodeStrings.PoolNotFound));
                     batchClient.OnRequest<PoolAddBatchRequest>(r => r.Return(() => { createdPools.Add(r.Parameters.Id); return new AzureOperationHeaderResponse<Protocol.Models.PoolAddHeaders>(); }));
 
                     var poolCoordinator = new PoolCoordinator(batchClient);
@@ -71,7 +71,7 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
                 using (BatchClient batchClient = BatchResourceFactory.CreateBatchClient())
                 {
                     // Arrange
-                    batchClient.OnRequest<PoolGetBatchRequest>(r => r.Throw(BatchServiceError.Simulate(HttpStatusCode.NotFound, BatchErrorCodeStrings.PoolNotFound)));
+                    batchClient.OnRequest<PoolGetBatchRequest>(r => r.Error(HttpStatusCode.NotFound, BatchErrorCodeStrings.PoolNotFound));
                     batchClient.OnRequest<PoolAddBatchRequest>(r => r.Capture(r.Parameters.Id, createdPools));
 
                     var poolCoordinator = new PoolCoordinator(batchClient);
@@ -94,8 +94,8 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
                 {
                     // Arrange
                     batchClient.OnRequest<PoolGetBatchRequest>(r => r.Return(new Protocol.Models.CloudPool { TargetDedicated = 40 }));
-                    batchClient.OnRequest<PoolAddBatchRequest>(r => r.Throw(new InvalidOperationException("Expected pool not to be created, but pool was created")));
-                    batchClient.OnRequest<PoolResizeBatchRequest>(r => r.Throw(new InvalidOperationException("Expected pool not to be resized, but pool was resized")));
+                    batchClient.OnRequest<PoolAddBatchRequest>(r => r.Unexpected("Expected pool not to be created, but pool was created"));
+                    batchClient.OnRequest<PoolResizeBatchRequest>(r => r.Unexpected("Expected pool not to be resized, but pool was resized"));
 
                     var poolCoordinator = new PoolCoordinator(batchClient);
 
@@ -115,7 +115,7 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
                 {
                     // Arrange
                     batchClient.OnRequest<PoolGetBatchRequest>(r => r.Return(new Protocol.Models.CloudPool { TargetDedicated = 37 }));
-                    batchClient.OnRequest<PoolAddBatchRequest>(r => r.Throw(new InvalidOperationException("Expected pool not to be created, but pool was created")));
+                    batchClient.OnRequest<PoolAddBatchRequest>(r => r.Unexpected("Expected pool not to be created, but pool was created"));
                     batchClient.OnRequest<PoolResizeBatchRequest>(r => r.Capture(r.Parameters.TargetDedicated, resizes));
 
                     var poolCoordinator = new PoolCoordinator(batchClient);
@@ -136,8 +136,8 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
                 {
                     // Arrange
                     batchClient.OnRequest<PoolGetBatchRequest>(r => r.Return(new Protocol.Models.CloudPool { TargetDedicated = 41 }));
-                    batchClient.OnRequest<PoolAddBatchRequest>(r => r.Throw(new InvalidOperationException("Expected pool not to be created, but pool was created")));
-                    batchClient.OnRequest<PoolResizeBatchRequest>(r => r.Throw(new InvalidOperationException("Expected pool not to be resized, but pool was resized")));
+                    batchClient.OnRequest<PoolAddBatchRequest>(r => r.Unexpected("Expected pool not to be created, but pool was created"));
+                    batchClient.OnRequest<PoolResizeBatchRequest>(r => r.Unexpected("Expected pool not to be resized, but pool was resized"));
 
                     var poolCoordinator = new PoolCoordinator(batchClient);
 
