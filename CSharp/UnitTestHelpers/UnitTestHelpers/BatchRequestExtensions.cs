@@ -10,6 +10,8 @@ namespace Microsoft.Azure.Batch.Test
 {
     public static class BatchRequestExtensions
     {
+        // Return
+
         public static void Return<TOptions, TResponse>(this Protocol.BatchRequest<TOptions, TResponse> r, Func<TResponse> response)
             where TOptions : Protocol.Models.IOptions, new()
             where TResponse : IAzureOperationResponse
@@ -29,12 +31,54 @@ namespace Microsoft.Azure.Batch.Test
             r.ServiceRequestFunc = _ => Task.FromResult(new AzureOperationResponse<IPage<TResponse>, THeader> { Body = DataPage.Single(response) });
         }
 
-        public static void Throw<TOptions, TResponse>(this Protocol.BatchRequest<TOptions, TResponse> r, Exception exception)
+        public static void Return<TBody, TOptions, TResponse>(this Protocol.BatchRequest<TBody, TOptions, TResponse> r, Func<TResponse> response)
             where TOptions : Protocol.Models.IOptions, new()
             where TResponse : IAzureOperationResponse
         {
-            r.ServiceRequestFunc = _ => { throw exception; };
+            r.ServiceRequestFunc = _ => Task.FromResult(response());
         }
+
+        // Error
+
+        public static void Error<TOptions, TResponse>(this Protocol.BatchRequest<TOptions, TResponse> r, HttpStatusCode httpStatusCode, string batchErrorCode)
+            where TOptions : Protocol.Models.IOptions, new()
+            where TResponse : IAzureOperationResponse
+        {
+            r.ServiceRequestFunc = _ => { throw BatchServiceError.Simulate(httpStatusCode, batchErrorCode); };
+        }
+
+        public static void Error<TBody, TOptions, TResponse>(this Protocol.BatchRequest<TBody, TOptions, TResponse> r, HttpStatusCode httpStatusCode, string batchErrorCode)
+            where TOptions : Protocol.Models.IOptions, new()
+            where TResponse : IAzureOperationResponse
+        {
+            r.ServiceRequestFunc = _ => { throw BatchServiceError.Simulate(httpStatusCode, batchErrorCode); };
+        }
+
+        // Capture
+
+        public static void Capture<TOptions, THeader, TResponse, TCapture>(this Protocol.BatchRequest<TOptions, AzureOperationResponse<IPage<TResponse>, THeader>> r, Func<TCapture> capture, List<TCapture> capturedValues)
+            where TOptions : Protocol.Models.IOptions, new()
+        {
+            r.ServiceRequestFunc = _ =>
+            {
+                var value = capture();
+                capturedValues.Add(value);
+                return Task.FromResult(new AzureOperationResponse<IPage<TResponse>, THeader> { Body = DataPage.Empty<TResponse>() });
+            };
+        }
+
+        public static void Capture<TParameter, TOptions, THeader, TCapture>(this Protocol.BatchRequest<TParameter, TOptions, AzureOperationHeaderResponse<THeader>> r, TCapture capture, List<TCapture> capturedValues)
+            where TOptions : Protocol.Models.IOptions, new()
+        {
+            r.ServiceRequestFunc = _ =>
+            {
+                var value = capture;
+                capturedValues.Add(value);
+                return Task.FromResult(new AzureOperationHeaderResponse<THeader>());
+            };
+        }
+
+        // Unexpected
 
         public static void Unexpected<TOptions, TResponse>(this Protocol.BatchRequest<TOptions, TResponse> r)
             where TOptions : Protocol.Models.IOptions, new()
@@ -48,38 +92,6 @@ namespace Microsoft.Azure.Batch.Test
             where TResponse : IAzureOperationResponse
         {
             r.ServiceRequestFunc = _ => { throw new UnexpectedRequestException(r.GetType(), message); };
-        }
-
-        public static void Error<TOptions, TResponse>(this Protocol.BatchRequest<TOptions, TResponse> r, HttpStatusCode httpStatusCode, string batchErrorCode)
-            where TOptions : Protocol.Models.IOptions, new()
-            where TResponse : IAzureOperationResponse
-        {
-            r.ServiceRequestFunc = _ => { throw BatchServiceError.Simulate(httpStatusCode, batchErrorCode); };
-        }
-
-        public static void Capture<TOptions, THeader, TResponse, TCapture>(this Protocol.BatchRequest<TOptions, AzureOperationResponse<IPage<TResponse>, THeader>> r, Func<TCapture> capture, List<TCapture> capturedValues)
-            where TOptions : Protocol.Models.IOptions, new()
-        {
-            r.ServiceRequestFunc = _ =>
-            {
-                var value = capture();
-                capturedValues.Add(value);
-                return Task.FromResult(new AzureOperationResponse<IPage<TResponse>, THeader> { Body = DataPage.Empty<TResponse>() });
-            };
-        }
-
-        public static void Return<TBody, TOptions, TResponse>(this Protocol.BatchRequest<TBody, TOptions, TResponse> r, Func<TResponse> response)
-            where TOptions : Protocol.Models.IOptions, new()
-            where TResponse : IAzureOperationResponse
-        {
-            r.ServiceRequestFunc = _ => Task.FromResult(response());
-        }
-
-        public static void Throw<TBody, TOptions, TResponse>(this Protocol.BatchRequest<TBody, TOptions, TResponse> r, Exception exception)
-            where TOptions : Protocol.Models.IOptions, new()
-            where TResponse : IAzureOperationResponse
-        {
-            r.ServiceRequestFunc = _ => { throw exception; };
         }
 
         public static void Unexpected<TBody, TOptions, TResponse>(this Protocol.BatchRequest<TBody, TOptions, TResponse> r)
@@ -96,23 +108,20 @@ namespace Microsoft.Azure.Batch.Test
             r.ServiceRequestFunc = _ => { throw new UnexpectedRequestException(r.GetType(), message); };
         }
 
-        public static void Error<TBody, TOptions, TResponse>(this Protocol.BatchRequest<TBody, TOptions, TResponse> r, HttpStatusCode httpStatusCode, string batchErrorCode)
+        // Throw
+
+        public static void Throw<TOptions, TResponse>(this Protocol.BatchRequest<TOptions, TResponse> r, Exception exception)
             where TOptions : Protocol.Models.IOptions, new()
             where TResponse : IAzureOperationResponse
         {
-            r.ServiceRequestFunc = _ => { throw BatchServiceError.Simulate(httpStatusCode, batchErrorCode); };
+            r.ServiceRequestFunc = _ => { throw exception; };
         }
 
-        public static void Capture<TParameter, TOptions, THeader, TCapture>(this Protocol.BatchRequest<TParameter, TOptions, AzureOperationHeaderResponse<THeader>> r, TCapture capture, List<TCapture> capturedValues)
+        public static void Throw<TBody, TOptions, TResponse>(this Protocol.BatchRequest<TBody, TOptions, TResponse> r, Exception exception)
             where TOptions : Protocol.Models.IOptions, new()
+            where TResponse : IAzureOperationResponse
         {
-            r.ServiceRequestFunc = _ =>
-            {
-                var value = capture;
-                capturedValues.Add(value);
-                return Task.FromResult(new AzureOperationHeaderResponse<THeader>());
-            };
+            r.ServiceRequestFunc = _ => { throw exception; };
         }
-
     }
 }
