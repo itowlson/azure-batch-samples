@@ -93,7 +93,7 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
                         new Models.CloudTask(),
                     };
 
-                    jobOperations.OnRequest<TaskListBatchRequest>(r => r.Return(() => fakeTasks));
+                    jobOperations.OnRequest<TaskListBatchRequest>(r => r.Return(fakeTasks));
 
                     var jobCoordinator = new JobCoordinator(jobOperations);
 

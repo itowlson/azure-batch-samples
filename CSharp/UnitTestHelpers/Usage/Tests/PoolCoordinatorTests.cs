@@ -93,7 +93,7 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
                 using (BatchClient batchClient = BatchResourceFactory.CreateBatchClient())
                 {
                     // Arrange
-                    batchClient.OnRequest<PoolGetBatchRequest>(r => r.Return(() => new Protocol.Models.CloudPool { TargetDedicated = 40 }));
+                    batchClient.OnRequest<PoolGetBatchRequest>(r => r.Return(new Protocol.Models.CloudPool { TargetDedicated = 40 }));
                     batchClient.OnRequest<PoolAddBatchRequest>(r => r.Throw(new InvalidOperationException("Expected pool not to be created, but pool was created")));
                     batchClient.OnRequest<PoolResizeBatchRequest>(r => r.Throw(new InvalidOperationException("Expected pool not to be resized, but pool was resized")));
 
@@ -114,7 +114,7 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
                 using (BatchClient batchClient = BatchResourceFactory.CreateBatchClient())
                 {
                     // Arrange
-                    batchClient.OnRequest<PoolGetBatchRequest>(r => r.Return(() => new Protocol.Models.CloudPool { TargetDedicated = 37 }));
+                    batchClient.OnRequest<PoolGetBatchRequest>(r => r.Return(new Protocol.Models.CloudPool { TargetDedicated = 37 }));
                     batchClient.OnRequest<PoolAddBatchRequest>(r => r.Throw(new InvalidOperationException("Expected pool not to be created, but pool was created")));
                     batchClient.OnRequest<PoolResizeBatchRequest>(r => r.Capture(r.Parameters.TargetDedicated, resizes));
 
@@ -135,7 +135,7 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
                 using (BatchClient batchClient = BatchResourceFactory.CreateBatchClient())
                 {
                     // Arrange
-                    batchClient.OnRequest<PoolGetBatchRequest>(r => r.Return(() => new Protocol.Models.CloudPool { TargetDedicated = 41 }));
+                    batchClient.OnRequest<PoolGetBatchRequest>(r => r.Return(new Protocol.Models.CloudPool { TargetDedicated = 41 }));
                     batchClient.OnRequest<PoolAddBatchRequest>(r => r.Throw(new InvalidOperationException("Expected pool not to be created, but pool was created")));
                     batchClient.OnRequest<PoolResizeBatchRequest>(r => r.Throw(new InvalidOperationException("Expected pool not to be resized, but pool was resized")));
 
