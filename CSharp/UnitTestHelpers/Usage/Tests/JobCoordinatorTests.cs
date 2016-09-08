@@ -40,6 +40,24 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
             }
 
             [Fact]
+            public async Task RequestsOnlyCompletedTasks_UsingCaptureHelper()
+            {
+                using (BatchClient batchClient = BatchResourceFactory.CreateBatchClient())
+                {
+                    var jobOperations = batchClient.JobOperations;
+
+                    var filters = new List<string>();
+                    jobOperations.OnRequest<TaskListBatchRequest>(r => r.Capture(() => r.Options.Filter, filters));
+
+                    var jobCoordinator = new JobCoordinator(jobOperations);
+
+                    await jobCoordinator.GetCompletedTaskCountAsync("someid");
+
+                    Assert.Equal("state eq 'completed'", filters.Single());
+                }
+            }
+
+            [Fact]
             public async Task CountsReturnedTasks()
             {
                 using (BatchClient batchClient = BatchResourceFactory.CreateBatchClient())

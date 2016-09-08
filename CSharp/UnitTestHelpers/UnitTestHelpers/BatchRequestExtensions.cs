@@ -23,6 +23,17 @@ namespace Microsoft.Azure.Batch.Test
             r.ServiceRequestFunc = _ => { throw exception; };
         }
 
+        public static void Capture<TOptions, THeader, TResponse, TCapture>(this Protocol.BatchRequest<TOptions, AzureOperationResponse<IPage<TResponse>, THeader>> r, Func<TCapture> capture, List<TCapture> capturedValues)
+            where TOptions : Protocol.Models.IOptions, new()
+        {
+            r.ServiceRequestFunc = _ =>
+            {
+                var value = capture();
+                capturedValues.Add(value);
+                return Task.FromResult(new AzureOperationResponse<IPage<TResponse>, THeader> { Body = DataPage.Empty<TResponse>() });
+            };
+        }
+
         public static void Return<TBody, TOptions, TResponse>(this Protocol.BatchRequest<TBody, TOptions, TResponse> r, Func<TResponse> response)
             where TOptions : Protocol.Models.IOptions, new()
             where TResponse : IAzureOperationResponse
@@ -36,5 +47,17 @@ namespace Microsoft.Azure.Batch.Test
         {
             r.ServiceRequestFunc = _ => { throw exception; };
         }
+
+        public static void Capture<TParameter, TOptions, THeader, TCapture>(this Protocol.BatchRequest<TParameter, TOptions, AzureOperationHeaderResponse<THeader>> r, TCapture capture, List<TCapture> capturedValues)
+            where TOptions : Protocol.Models.IOptions, new()
+        {
+            r.ServiceRequestFunc = _ =>
+            {
+                var value = capture;
+                capturedValues.Add(value);
+                return Task.FromResult(new AzureOperationHeaderResponse<THeader>());
+            };
+        }
+
     }
 }

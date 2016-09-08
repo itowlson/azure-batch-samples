@@ -62,6 +62,30 @@ namespace Microsoft.Azure.Batch.UnitTestHelpers.Usage.Tests
                     Assert.Equal("new-pool", createdPools.Single());
                 }
             }
+
+            [Fact]
+            public async Task IfPoolDoesNotExistThenItIsCreated_TestedUsingCaptureHelper()
+            {
+                var createdPools = new List<string>();
+
+                using (BatchClient batchClient = BatchResourceFactory.CreateBatchClient())
+                {
+                    // Arrange
+                    batchClient.OnRequest<PoolGetBatchRequest>(r => r.Throw(BatchServiceError.Simulate(HttpStatusCode.NotFound, BatchErrorCodeStrings.PoolNotFound)));
+                    batchClient.OnRequest<PoolAddBatchRequest>(r => r.Capture(r.Parameters.Id, createdPools));
+
+                    var poolCoordinator = new PoolCoordinator(batchClient);
+
+                    // Act
+                    await poolCoordinator.EnsureCapacity("new-pool", "A2", 40);
+                    await poolCoordinator.EnsureCapacity("newer-pool", "A2", 40);
+
+                    // Assert
+                    Assert.Equal(2, createdPools.Count);
+                    Assert.Equal("new-pool", createdPools[0]);
+                    Assert.Equal("newer-pool", createdPools[1]);
+                }
+            }
         }
     }
 }
