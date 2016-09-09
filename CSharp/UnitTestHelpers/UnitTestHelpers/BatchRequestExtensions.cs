@@ -19,6 +19,13 @@ namespace Microsoft.Azure.Batch.Test
             r.ServiceRequestFunc = _ => Task.FromResult(response());
         }
 
+        public static void Return<TBody, TOptions, TResponse>(this Protocol.BatchRequest<TBody, TOptions, TResponse> r, Func<TResponse> response)
+            where TOptions : Protocol.Models.IOptions, new()
+            where TResponse : IAzureOperationResponse
+        {
+            r.ServiceRequestFunc = _ => Task.FromResult(response());
+        }
+
         public static void Return<TOptions, TResponse, THeader>(this Protocol.BatchRequest<TOptions, AzureOperationResponse<TResponse, THeader>> r, TResponse response)
             where TOptions : Protocol.Models.IOptions, new()
         {
@@ -29,13 +36,6 @@ namespace Microsoft.Azure.Batch.Test
             where TOptions : Protocol.Models.IOptions, new()
         {
             r.ServiceRequestFunc = _ => Task.FromResult(new AzureOperationResponse<IPage<TResponse>, THeader> { Body = DataPage.Single(response) });
-        }
-
-        public static void Return<TBody, TOptions, TResponse>(this Protocol.BatchRequest<TBody, TOptions, TResponse> r, Func<TResponse> response)
-            where TOptions : Protocol.Models.IOptions, new()
-            where TResponse : IAzureOperationResponse
-        {
-            r.ServiceRequestFunc = _ => Task.FromResult(response());
         }
 
         // Error
