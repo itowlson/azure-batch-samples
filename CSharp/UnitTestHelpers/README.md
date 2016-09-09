@@ -30,7 +30,7 @@ The usage pattern is as follows:
 
 For example (using the Xunit unit testing framework to implement a test):
 
-```
+```csharp
 [Fact]
 public async Task EnsureCapacityMethod_IfPoolDoesNotExistThenItIsCreated()
 {
