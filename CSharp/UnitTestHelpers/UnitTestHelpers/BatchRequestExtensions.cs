@@ -1,4 +1,6 @@
-﻿using Microsoft.Rest.Azure;
+﻿//Copyright (c) Microsoft Corporation
+
+using Microsoft.Rest.Azure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
