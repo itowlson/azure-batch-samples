@@ -40,6 +40,18 @@ namespace Microsoft.Azure.Batch.Test
             r.ServiceRequestFunc = _ => Task.FromResult(new AzureOperationResponse<IPage<TResponse>, THeader> { Body = DataPage.Single(response) });
         }
 
+        public static void Return<TBody, TOptions, TResponse, THeader>(this Protocol.BatchRequest<TBody, TOptions, AzureOperationResponse<TResponse, THeader>> r, TResponse response)
+            where TOptions : Protocol.Models.IOptions, new()
+        {
+            r.ServiceRequestFunc = _ => Task.FromResult(new AzureOperationResponse<TResponse, THeader> { Body = response });
+        }
+
+        public static void Return<TBody, TOptions, TResponse, THeader>(this Protocol.BatchRequest<TBody, TOptions, AzureOperationResponse<IPage<TResponse>, THeader>> r, IEnumerable<TResponse> response)
+            where TOptions : Protocol.Models.IOptions, new()
+        {
+            r.ServiceRequestFunc = _ => Task.FromResult(new AzureOperationResponse<IPage<TResponse>, THeader> { Body = DataPage.Single(response) });
+        }
+
         // Error
 
         public static void Error<TOptions, TResponse>(this Protocol.BatchRequest<TOptions, TResponse> r, HttpStatusCode httpStatusCode, string batchErrorCode)
